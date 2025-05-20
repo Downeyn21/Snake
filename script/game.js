@@ -16,7 +16,10 @@ let gameover = false
 
 function engine(currentTime) {
     if(gameover) {
-        alert('You Died')
+        if(confirm('You Died')) {
+            window.location = '/'
+        }
+        return
     }
 
     window.requestAnimationFrame(engine)
