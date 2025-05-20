@@ -1,15 +1,12 @@
 import { getInputDirection } from "./input.js"
 
 export const SNAKE_SPEED = 4
-const gameBoard = document.getElementById('gameBoard')
-
-const snakeBody = [
-    { x:-11, y:-11},
-    { x:12, y:11},
-    { x:13, y:11}
-]
+const snakeBody = [{ x:11, y:11 }]
+let newSegment = 0
 
 export function update() {
+    addSegment()
+
     let inputDirection = getInputDirection()
     for(let i = snakeBody.length - 2; i >= 0; i--){
         snakeBody[i + 1] = { ...snakeBody[i] }
@@ -22,8 +19,7 @@ export function update() {
     
 }
 
-
-export function draw() {
+export function draw(gameBoard) {
     snakeBody.forEach(segment => {
         const snakeSegment = document.createElement('div')
         snakeSegment.style.gridRowStart = segment.y
@@ -31,4 +27,36 @@ export function draw() {
         gameBoard.appendChild(snakeSegment)
         snakeSegment.classList.add('snake')
     })
+}
+
+export function expandSnake(amount) {
+    newSegment += amount
+}
+
+export function onSnake(position, { ignoreHead = false } = {}) {
+    return snakeBody.some((segment, index) => {
+        if( ignoreHead && index === 0) {
+            return false
+        }
+        return equalPositions(segment, position)
+    })
+}
+
+export function getSnakeHead() {
+    return snakeBody[0]
+}
+
+export function snakeInterection() {
+    return onSnake(snakeBody[0], {ignoreHead: true})
+}
+
+function equalPositions(pos1, pos2) {
+    return ( pos1.x === pos2.x && pos1.y === pos2.y )}
+
+function addSegment() {
+    for( let i = 0; i < newSegment; i++ ) {
+        snakeBody.push({ ...snakeBody[snakeBody[snakeBody.length - 1] ]})
+    }
+
+    newSegment = 0
 }
